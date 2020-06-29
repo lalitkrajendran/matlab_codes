@@ -1,4 +1,3 @@
-
 % TEST CASE 1
 display('Test 1: Violin plot default options');
 load carbig MPG Origin

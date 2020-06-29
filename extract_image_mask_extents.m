@@ -15,6 +15,10 @@ function [xmin, xmax, ymin, ymax] = extract_image_mask_extents(image_mask, displ
 % AUTHOR:
 % Lalit Rajendran (lrajendr@purdue.edu)
 
+    if nargin < 2
+        display_mask = 0;
+    end
+    
     % ensure that minimum value of mask is 0
     image_mask = image_mask - min(image_mask(:));
     
