@@ -1,5 +1,4 @@
 function plot_colored_circles_div(h, x, y, f, min_color, max_color, r)
-    
     cmap = flipud(cbrewer('div', 'RdBu', 100));
 
     figure(h)
