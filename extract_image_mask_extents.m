@@ -1,9 +1,8 @@
 function [xmin, xmax, ymin, ymax] = extract_image_mask_extents(image_mask, display_mask)
-% This function extracts the extents of the mask from a displacement field
-% obtained from Prana processing
+% This function extracts the extents of a mask 
 %
 % INPUTS:
-% results: result strcture obtained from Prana
+% image_mask: mask array
 % display_mask: display the extracted mask and extents? (true/false)
 %
 % OUTPUTS:
@@ -51,7 +50,7 @@ function [xmin, xmax, ymin, ymax] = extract_image_mask_extents(image_mask, displ
         plot(xmax, ymax, 'ro', 'markersize', 14)
         plot(xmin, ymax, 'ro', 'markersize', 14)
         set_axes(gca);
-        annotate_image(gcf, gca);
+        % annotate_image(gcf, gca);
         title('Mask')
     end
 end

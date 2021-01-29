@@ -44,6 +44,8 @@ function violins = violinplot(data, cats, varargin)
 %                    Defaults to false
 %     'ShowMean'     Whether to show mean indicator
 %                    Defaults to false
+%     'ShowRMS'      Whether to show RMS indicator
+%                    Defaults to false
 %     'GroupOrder'   Cell of category names in order to be plotted.
 %                    Defaults to alphabetical ordering
 

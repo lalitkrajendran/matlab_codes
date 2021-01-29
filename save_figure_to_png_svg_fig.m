@@ -22,7 +22,7 @@ function save_figure_to_png_svg_fig(figure_save_directory, figure_name, format_i
     if format_id(1)
         % saveas(gcf, fullfile(figure_save_directory, [figure_name '.png']), 'png');
         % print(gcf, fullfile(figure_save_directory, [figure_name '.png']), '-dpng', '-r600');
-        export_fig(fullfile(figure_save_directory, [figure_name '.png']), '-r600');
+        export_fig(fullfile(figure_save_directory, [figure_name '.png']), '-r1200');
     end
     
     % save to eps

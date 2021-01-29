@@ -1,4 +1,4 @@
-function plot_colored_circles_div(h, x, y, f, f_min, f_max, r)
+function plot_colored_circles_div(h, x, y, f, f_min, f_max, r, color_name)
 % Function to plot circles whose colors are proportional to the value of the quantity
 % at that point. The colors are chosen from a diverging colormap.
 %
@@ -8,6 +8,7 @@ function plot_colored_circles_div(h, x, y, f, f_min, f_max, r)
 % f: scalar that controls the color
 % f_min, f_max: minimum and maximum value of the scalar
 % r: radius of the circle that is to plotted
+% color_name: name of the colormap to use from cbrewer
 %
 % OUTPUTS:
 % NONE
@@ -16,7 +17,8 @@ function plot_colored_circles_div(h, x, y, f, f_min, f_max, r)
 % Lalit Rajendran (lrajendr@purdue.edu)    
 
     % obtain colormap
-    cmap = flipud(cbrewer('div', 'RdBu', 100));
+    % cmap = flipud(cbrewer('div', 'RdBu', 100));
+    cmap = flipud(cbrewer('div', color_name, 100));
 
     % switch to figure
     figure(h)

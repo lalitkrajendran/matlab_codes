@@ -56,6 +56,7 @@ classdef Violin < handle
         MedianPlot  % scatter plot of the median (one point)
         NotchPlots  % scatter plots for the notch indicators
         MeanPlot    % line plot of the mean (horizontal line)
+        RMSPlot     % line plot of the RMS (horizontal line with 'x' marker)
     end
 
     properties (Dependent=true)
@@ -68,6 +69,7 @@ classdef Violin < handle
         ShowData    % whether to show data points
         ShowNotches % whether to show notch indicators
         ShowMean    % whether to show mean indicator
+        ShowRMS     % whether to show RMS indicator
     end
 
     methods
@@ -101,6 +103,8 @@ classdef Violin < handle
             %     'ShowNotches'  Whether to show notch indicators.
             %                    Defaults to false
             %     'ShowMean'     Whether to show mean indicator.
+            %                    Defaults to false
+            %     'ShowRMS'      Whether to show rms indicator.
             %                    Defaults to false
 
             args = obj.checkInputs(data, pos, varargin{:});
@@ -150,8 +154,9 @@ classdef Violin < handle
                      [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
                      [1 1 1]);
                  
+
             % plot the data mean
-            meanValue = mean(data);
+            meanValue = mean(data, 'omitnan');
             if length(density) > 1
                 meanDensityWidth = interp1(value, density, meanValue)*width;
             else % all data is identical:
@@ -164,6 +169,23 @@ classdef Violin < handle
                                 [meanValue, meanValue]);
             obj.MeanPlot.LineWidth = 1;
                  
+            % plot the data RMS
+            rmsValue = rms(data, 'omitnan');
+            if length(density) > 1
+                rmsDensityWidth = interp1(value, density, rmsValue)*width;
+            else % all data is identical:
+                rmsDensityWidth = density*width;
+            end
+            if rmsDensityWidth<args.BoxWidth/2
+                rmsDensityWidth=args.BoxWidth/2;
+            end
+            % obj.RMSPlot = plot(pos+[-1,1].*rmsDensityWidth, ...
+            %                     [rmsValue, rmsValue], 'x-', 'markersize', 14);
+            % obj.RMSPlot.LineWidth = 2;
+            obj.RMSPlot = plot(pos, rmsValue, 'x', 'markersize', 14);            
+
+
+            % plot the data median and quartiles
             IQR = quartiles(3) - quartiles(1);
             lowhisker = quartiles(1) - 1.5*IQR;
             lowhisker = max(lowhisker, min(data(data > lowhisker)));
@@ -174,11 +196,17 @@ classdef Violin < handle
             end
             obj.MedianPlot = scatter(pos, quartiles(2), [], [1 1 1], 'filled');
 
+            % obj.NotchPlots = ...
+            %      scatter(pos, quartiles(2)-1.57*IQR/sqrt(length(data)), ...
+            %              [], [1 1 1], 'filled', '^');
+            % obj.NotchPlots(2) = ...
+            %      scatter(pos, quartiles(2)+1.57*IQR/sqrt(length(data)), ...
+            %              [], [1 1 1], 'filled', 'v');
             obj.NotchPlots = ...
-                 scatter(pos, quartiles(2)-1.57*IQR/sqrt(length(data)), ...
+                 scatter(pos, quartiles(1), ...
                          [], [1 1 1], 'filled', '^');
             obj.NotchPlots(2) = ...
-                 scatter(pos, quartiles(2)+1.57*IQR/sqrt(length(data)), ...
+                 scatter(pos, quartiles(3), ...
                          [], [1 1 1], 'filled', 'v');
 
             obj.EdgeColor = args.EdgeColor;
@@ -194,6 +222,7 @@ classdef Violin < handle
             obj.ShowData = args.ShowData;
             obj.ShowNotches = args.ShowNotches;
             obj.ShowMean = args.ShowMean;
+            obj.ShowRMS = args.ShowRMS;
         end
 
         function set.EdgeColor(obj, color)
@@ -252,6 +281,7 @@ classdef Violin < handle
             obj.ViolinPlot.FaceColor = color;
             obj.ScatterPlot.MarkerFaceColor = color;
             obj.MeanPlot.Color = color;
+            obj.RMSPlot.Color = color;
         end
 
         function color = get.ViolinColor(obj)
@@ -314,6 +344,22 @@ classdef Violin < handle
                 yesno = strcmp(obj.MeanPlot.Visible, 'on');
             end
         end
+
+        function set.ShowRMS(obj, yesno)
+            if ~isempty(obj.RMSPlot)
+                if yesno
+                    obj.RMSPlot.Visible = 'on';
+                else
+                    obj.RMSPlot.Visible = 'off';
+                end
+            end
+        end
+
+        function yesno = get.ShowRMS(obj)
+            if ~isempty(obj.RMSPlot)
+                yesno = strcmp(obj.RMSPlot.Visible, 'on');
+            end
+        end        
     end
 
     methods (Access=private)
@@ -335,6 +381,7 @@ classdef Violin < handle
             p.addParameter('ShowData', true, isscalarlogical);
             p.addParameter('ShowNotches', false, isscalarlogical);
             p.addParameter('ShowMean', false, isscalarlogical);
+            p.addParameter('ShowRMS', false, isscalarlogical);
 
             p.parse(data, pos, varargin{:});
             results = p.Results;
